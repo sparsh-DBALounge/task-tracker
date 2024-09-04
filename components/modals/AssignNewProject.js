@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { assignProjectAsync } from '@/redux/slice/projectTracker.slice';
+import { useSelector } from 'react-redux';
 import { mapEmployeeNameToId } from '@/utils/mapEmployeeNameToId';
 import { mapProjectNameToId } from '@/utils/mapProjectNameToId';
 import { mapRoleToId } from '@/utils/mapRoleToId';
-import { fetchRolesAsync } from '@/redux/slice/role.slice';
 import { useProjectHooks } from '@/hooks/useProjectHooks';
 import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
 import { useRoleHooks } from '@/hooks/useRoleHooks';
+import { useProjectTrackerHooks } from '@/hooks/useProjectTrackerHooks';
+import toast from 'react-hot-toast';
 
 const AssignNewProject = ({
   openAssignProjectModal,
   setOpenAssignProjectModal,
 }) => {
-  const dispatch = useDispatch();
   const { fetchProjects } = useProjectHooks();
   const { fetchEmployees } = useEmployeeHooks();
   const { fetchRoles } = useRoleHooks();
+  const { addAssignedProjectDB } = useProjectTrackerHooks();
   const { employees } = useSelector((state) => state.employeeSlice);
   const { projects } = useSelector((state) => state.projectSlice);
   const { roles } = useSelector((state) => state.roleSlice);
@@ -52,7 +52,8 @@ const AssignNewProject = ({
       role,
     };
 
-    dispatch(assignProjectAsync({ dbData, reduxData }));
+    addAssignedProjectDB(dbData, reduxData);
+    toast.success('Project Assigned');
     setEmployeeName('');
     setProjectName('');
     setRole('');

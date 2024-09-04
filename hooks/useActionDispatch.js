@@ -36,6 +36,13 @@ import {
   updateAttendance,
 } from '@/redux/slice/attendance.slice';
 
+import {
+  setAssignedProjects,
+  addAssignProject,
+  deleteAssignedProject,
+  updateAssignedProject,
+} from '@/redux/slice/projectTracker.slice';
+
 const useActionDispatch = () => {
   const dispatch = useDispatch();
 
@@ -56,6 +63,14 @@ const useActionDispatch = () => {
     updateProjects: (payload) => dispatch(updateProjects(payload)),
     deleteProject: (payload) => dispatch(deleteProject(payload)),
     addProject: (payload) => dispatch(addProject(payload)),
+
+    // Assigned-Projects
+    setAssignedProjects: (payload) => dispatch(setAssignedProjects(payload)),
+    deleteAssignedProject: (payload) =>
+      dispatch(deleteAssignedProject(payload)),
+    updateAssignedProject: (payload) =>
+      dispatch(updateAssignedProject(payload)),
+    addAssignProject: (payload) => dispatch(addAssignProject(payload)),
 
     // Tasks
     setTasks: (payload) => dispatch(setTasks(payload)),

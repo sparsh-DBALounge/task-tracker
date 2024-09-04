@@ -13,9 +13,15 @@ import { mapRoleToId } from '@/utils/mapRoleToId';
 import { mapProjectNameToId } from '@/utils/mapProjectNameToId';
 import ConfirmDelete from '@/components/modals/ConfirmDelete';
 import toast from 'react-hot-toast';
+import { useProjectTrackerHooks } from '@/hooks/useProjectTrackerHooks';
 
 export default function ProjectTracker() {
   const dispatch = useDispatch();
+  const {
+    fetchAssignedProjects,
+    deleteAssignedProjectDB,
+    updateAssignedProjectDB,
+  } = useProjectTrackerHooks();
   const { employees } = useSelector((state) => state.employeeSlice);
   const { projects } = useSelector((state) => state.projectSlice);
   const { roles } = useSelector((state) => state.roleSlice);
@@ -34,12 +40,12 @@ export default function ProjectTracker() {
   );
 
   useEffect(() => {
-    dispatch(fetchAssignedProjectsAsync());
-  }, [dispatch]);
+    fetchAssignedProjects();
+  }, []);
 
   useEffect(() => {
     if (confirmDelete && selectedProject) {
-      dispatch(deleteAssignedProjectAsync(selectedProject.id));
+      deleteAssignedProjectDB(selectedProject.id);
       toast('Assigned Project Deleted', {
         style: {
           fontWeight: 'bold',
@@ -61,20 +67,12 @@ export default function ProjectTracker() {
       role_id,
     };
     const reduxData = {
-      employee_id,
-      project_id,
-      role_id,
+      ...dbData,
       employee_name: employeeName,
       project: projectName,
       role,
     };
-    dispatch(
-      updateAssignedProjectAsync({
-        id: project.employee_id,
-        dbData,
-        reduxData,
-      })
-    );
+    updateAssignedProjectDB(project.id, dbData, reduxData);
     setupdateAssignedProjectId(null);
   };
 

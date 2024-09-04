@@ -14,6 +14,12 @@ const API = {
   deleteProject: (id) => BASE_URL + '/project/' + `${id}`,
   projectById: (id) => BASE_URL + '/project/' + `${id}`,
 
+  // Assigned-Projects
+  getAssignedProjects: (id) => BASE_URL + '/assignProject',
+  addAssignedProjects: (id) => BASE_URL + '/assignProject',
+  deleteAssignedProject: (id) => BASE_URL + '/assignProject/' + `${id}`,
+  updateAssignedProject: (id) => BASE_URL + '/assignProject/' + `${id}`,
+
   //   Role
   fetchRoles: () => BASE_URL + '/role',
   addRole: () => BASE_URL + '/role',
