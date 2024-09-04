@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchEmployeeById } from '@/redux/slice/employee.slice';
+import { useSelector } from 'react-redux';
+import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
 
 const ViewDetails = ({
   openViewDetails,
@@ -11,13 +11,13 @@ const ViewDetails = ({
   employeeBasicDetails,
   employeeId,
 }) => {
-  const dispatch = useDispatch();
   const { employee } = useSelector((state) => state.employeeSlice);
+  const { employeeViewDetails } = useEmployeeHooks();
   const [isModalOpen, setIsModalOpen] = useState(openViewDetails);
 
   useEffect(() => {
-    dispatch(fetchEmployeeById(employeeId));
-  }, [dispatch]);
+    employeeViewDetails(employeeId);
+  }, []);
 
   const handleCancel = () => {
     setIsModalOpen(false);

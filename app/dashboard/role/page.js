@@ -2,18 +2,15 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import {
-  fetchRolesAsync,
-  updateRoleAsync,
-  deleteRoleAsync,
-} from '@/redux/slice/role.slice';
 import toast from 'react-hot-toast';
 import { withAuth } from '@/HOC/withAuth';
 import ConfirmDelete from '@/components/modals/ConfirmDelete';
 import AddNewRole from '@/components/modals/AddNewRole';
+import { useRoleHooks } from '@/hooks/useRoleHooks';
 
 function Role() {
   const dispatch = useDispatch();
+  const { fetchRoles, deleteRoleDB, updateRoleDB } = useRoleHooks();
   const { roles } = useSelector((state) => state.roleSlice);
   const [updateRoleId, setUpdateRoleId] = useState(null);
   const [role, setRole] = useState('');
@@ -23,12 +20,12 @@ function Role() {
   const [addNewRole, setAddNewRole] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchRolesAsync());
-  }, [dispatch]);
+    fetchRoles();
+  }, []);
 
   useEffect(() => {
     if (confirmDelete && selectedRoleForDelete) {
-      dispatch(deleteRoleAsync(selectedRoleForDelete.id));
+      deleteRoleDB(selectedRoleForDelete.id);
       toast('Role Deleted', {
         style: {
           fontWeight: 'bold',
@@ -41,14 +38,9 @@ function Role() {
   }, [confirmDelete, selectedRoleForDelete, dispatch]);
 
   const handleRoleUpdate = async () => {
-    const updatedRole = { role };
-    dispatch(updateRoleAsync({ id: updateRoleId, updatedRole }));
-    toast('Role Updated', {
-      style: {
-        fontWeight: 'bold',
-        fontSize: '18px',
-      },
-    });
+    console.log('hello');
+    updateRoleDB(updateRoleId, { role });
+    toast.success('Role Updated');
     setUpdateRoleId(null);
     setRole('');
     setLoading(false);

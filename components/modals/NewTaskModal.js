@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { addNewTaskAsync } from '@/redux/slice/task.slice';
-import { useDispatch } from 'react-redux';
-import { getCurrentDate } from '@/utils/getCurrentDate';
+import { useTaskHooks } from '@/hooks/useTaskHooks';
 
 const NewTaskModal = ({ addNewTask, setAddNewTask }) => {
-  const dispatch = useDispatch();
+  const { addTaskDB } = useTaskHooks();
   const [isModalOpen, setIsModalOpen] = useState(addNewTask);
   const [taskName, setTaskName] = useState('');
   const [description, setDescription] = useState('');
@@ -16,7 +14,7 @@ const NewTaskModal = ({ addNewTask, setAddNewTask }) => {
       taskName,
       description,
     };
-    dispatch(addNewTaskAsync(newTask));
+    addTaskDB(newTask);
     setAddNewTask('');
     setDescription('');
     setIsModalOpen(false);

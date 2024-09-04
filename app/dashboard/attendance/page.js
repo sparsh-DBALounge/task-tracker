@@ -1,21 +1,21 @@
 'use client';
 
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import ViewAttendance from '@/components/modals/ViewAttendance';
-import { fetchEmployees } from '@/redux/slice/employee.slice';
 import AddNewAttendance from '@/components/modals/AddNewAttendance';
+import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
 
 export default function attendance() {
-  const dispatch = useDispatch();
+  const { fetchEmployees } = useEmployeeHooks();
   const [viewAttendance, setViewAttendace] = useState(false);
   const [viewAttendanceId, setViewAttendaceId] = useState(null);
   const [addAttendance, setAddAttendance] = useState(false);
   const { employees } = useSelector((state) => state.employeeSlice);
 
   useEffect(() => {
-    dispatch(fetchEmployees());
-  }, [dispatch]);
+    fetchEmployees();
+  }, []);
 
   return (
     <>

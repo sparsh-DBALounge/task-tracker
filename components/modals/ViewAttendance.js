@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from 'antd';
-import {
-  fetchAttendanceById,
-  updateAttendance,
-} from '@/redux/slice/attendance.slice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAttendanceHooks } from '@/hooks/useAttendanceHooks';
+import toast from 'react-hot-toast';
 
 const ViewAttendance = ({
   viewAttendance,
   setViewAttendace,
   viewAttendanceId,
 }) => {
-  const dispatch = useDispatch();
+  const { updateAttendanceRecord, fetchEmployeeAttendance } =
+    useAttendanceHooks();
   const { employeeAttendance } = useSelector((state) => state.attendanceSlice);
   const [isModalOpen, setIsModalOpen] = useState(viewAttendance);
   const [updateRecord, setUpdateRecord] = useState(false);
@@ -20,8 +19,8 @@ const ViewAttendance = ({
   const [newShift, setNewShift] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchAttendanceById(viewAttendanceId));
-  }, [viewAttendanceId]);
+    fetchEmployeeAttendance(viewAttendanceId);
+  }, []);
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -34,7 +33,8 @@ const ViewAttendance = ({
       location: newLocation,
       shift: newShift,
     };
-    dispatch(updateAttendance({ id: viewAttendanceId, data: dbData }));
+    updateAttendanceRecord(record.employee_id, dbData);
+    toast.success('Record Updated');
     setUpdateRecordId(null);
   };
 

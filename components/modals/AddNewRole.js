@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { useDispatch } from 'react-redux';
-import { addRoleAsync } from '@/redux/slice/role.slice';
+import toast from 'react-hot-toast';
+import { useRoleHooks } from '@/hooks/useRoleHooks';
 
 const AddNewRole = ({ addNewRole, setAddNewRole }) => {
-  const dispatch = useDispatch();
+  const { addRoleDB } = useRoleHooks();
   const [isModalOpen, setIsModalOpen] = useState(addNewRole);
   const [role, setRole] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addRoleAsync({ role }));
+    addRoleDB({ role });
+    toast.success('New Role Added');
     setRole('');
 
     setIsModalOpen(false);

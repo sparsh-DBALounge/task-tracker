@@ -2,20 +2,16 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
-import {
-  fetchProjectsAsync,
-  updateProjectAsync,
-  deleteProjectAsync,
-} from '@/redux/slice/project.slice';
 import toast from 'react-hot-toast';
 import { withAuth } from '@/HOC/withAuth';
 import ConfirmDelete from '@/components/modals/ConfirmDelete';
-import AssignNewProject from '@/components/modals/AssignNewProject';
 import AddNewProject from '@/components/modals/AddNewProject';
 import ViewProjectDetails from '@/components/modals/ViewProjectDetails';
+import { useProjectHooks } from '@/hooks/useProjectHooks';
 
 function project() {
   const dispatch = useDispatch();
+  const { fetchProjects, updateProject, deleteProjectDB } = useProjectHooks();
   const { projects } = useSelector((state) => state.projectSlice);
   const [updateProjectId, setUpdateProjectId] = useState(null);
   const [projectName, setProjectName] = useState('');
@@ -27,12 +23,12 @@ function project() {
   const [viewProjectDetailsId, setViewProjectDetaildId] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchProjectsAsync());
-  }, [dispatch]);
+    fetchProjects();
+  }, []);
 
   useEffect(() => {
     if (confirmDelete && selectedProject) {
-      dispatch(deleteProjectAsync(selectedProject.id));
+      deleteProjectDB(selectedProject.id);
       toast('Project Deleted', {
         style: {
           fontWeight: 'bold',
@@ -44,7 +40,7 @@ function project() {
   }, [confirmDelete, selectedProject, dispatch]);
 
   const handleProjectUpdate = (project) => {
-    dispatch(updateProjectAsync({ id: project.id, updatedName: projectName }));
+    updateProject(project.id, projectName);
     setUpdateProjectId(null);
     toast.success('Project Updated');
   };

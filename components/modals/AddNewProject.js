@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { Modal } from 'antd';
-import { addProjectAsync } from '@/redux/slice/project.slice';
-import { useDispatch } from 'react-redux';
+import { useProjectHooks } from '@/hooks/useProjectHooks';
 
 const AddNewProject = ({ openAddProjectModal, setOpenAddProjectModal }) => {
-  const dispatch = useDispatch();
+  const { addProjectDB } = useProjectHooks();
   const [isModalOpen, setIsModalOpen] = useState(openAddProjectModal);
   const [project, setProject] = useState('');
 
@@ -16,7 +15,7 @@ const AddNewProject = ({ openAddProjectModal, setOpenAddProjectModal }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(addProjectAsync({ project }));
+    addProjectDB(project);
     setProject('');
     setOpenAddProjectModal(false);
   };

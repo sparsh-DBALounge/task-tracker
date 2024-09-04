@@ -1,20 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Modal } from 'antd';
-import { fetchProjectByIdAsync } from '@/redux/slice/project.slice';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useProjectHooks } from '@/hooks/useProjectHooks';
 
 const ViewProjectDetails = ({
   openViewDetailsModal,
   setOpenViewDetailsModal,
   viewProjectDetailsId,
 }) => {
-  const dispatch = useDispatch();
+  const { projectViewDetails } = useProjectHooks();
   const { project } = useSelector((state) => state.projectSlice);
   const [isModalOpen, setIsModalOpen] = useState(openViewDetailsModal);
 
   useEffect(() => {
-    dispatch(fetchProjectByIdAsync(viewProjectDetailsId));
-  }, [dispatch]);
+    projectViewDetails(viewProjectDetailsId);
+  }, []);
 
   const handleCancel = () => {
     setIsModalOpen(false);

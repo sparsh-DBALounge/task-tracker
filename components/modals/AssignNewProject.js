@@ -6,14 +6,18 @@ import { mapEmployeeNameToId } from '@/utils/mapEmployeeNameToId';
 import { mapProjectNameToId } from '@/utils/mapProjectNameToId';
 import { mapRoleToId } from '@/utils/mapRoleToId';
 import { fetchRolesAsync } from '@/redux/slice/role.slice';
-import { fetchEmployees } from '@/redux/slice/employee.slice';
-import { fetchProjectsAsync } from '@/redux/slice/project.slice';
+import { useProjectHooks } from '@/hooks/useProjectHooks';
+import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
+import { useRoleHooks } from '@/hooks/useRoleHooks';
 
 const AssignNewProject = ({
   openAssignProjectModal,
   setOpenAssignProjectModal,
 }) => {
   const dispatch = useDispatch();
+  const { fetchProjects } = useProjectHooks();
+  const { fetchEmployees } = useEmployeeHooks();
+  const { fetchRoles } = useRoleHooks();
   const { employees } = useSelector((state) => state.employeeSlice);
   const { projects } = useSelector((state) => state.projectSlice);
   const { roles } = useSelector((state) => state.roleSlice);
@@ -23,10 +27,10 @@ const AssignNewProject = ({
   const [role, setRole] = useState(roles[0].role);
 
   useEffect(() => {
-    dispatch(fetchEmployees());
-    dispatch(fetchProjectsAsync());
-    dispatch(fetchRolesAsync());
-  }, [dispatch]);
+    fetchEmployees();
+    fetchProjects();
+    fetchRoles();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();

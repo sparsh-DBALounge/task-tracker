@@ -1,41 +1,36 @@
 'use client';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect, useState, useRef } from 'react';
-import {
-  fetchTasksAsync,
-  updateTaskAsync,
-  deleteTaskAsync,
-} from '@/redux/slice/task.slice';
+import { useEffect, useState } from 'react';
 import NewTaskModal from '@/components/modals/NewTaskModal';
 import TaskDetails from '@/components/modals/TaskDetails';
 import { withAuth } from '@/HOC/withAuth';
 import toast from 'react-hot-toast';
 import ConfirmDelete from '@/components/modals/ConfirmDelete';
+import { useTaskHooks } from '@/hooks/useTaskHooks';
 
 function Task() {
   const dispatch = useDispatch();
   const { tasks } = useSelector((state) => state.taskSlice);
+  const { fetchTasks, deleteTaskDB, updateTaskDB } = useTaskHooks();
   const [updateTaskId, setUpdateTaskId] = useState(null);
   const [newTaskName, setnewTaskName] = useState('');
   const [newDescription, setNewDescription] = useState('');
   const [addNewTask, setAddNewTask] = useState(false);
   const [showTaskDetails, setShowTaskDetails] = useState(false);
   const [showTaskDetailsId, setShowTaskDetailsId] = useState(null);
-  const [excelFile, setExcelFile] = useState(null);
-  const fileRef = useRef(null);
 
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchTasksAsync());
-  }, [dispatch]);
+    fetchTasks();
+  }, []);
 
   useEffect(() => {
     if (confirmDelete && selectedTask) {
-      dispatch(deleteTaskAsync(selectedTask.id));
+      deleteTaskDB(selectedTask.id);
       toast('Task Deleted', {
         style: {
           fontWeight: 'bold',
@@ -59,15 +54,11 @@ function Task() {
       taskName: newTaskName,
       description: newDescription,
     };
-    dispatch(updateTaskAsync({ id, updatedTask }));
+    updateTaskDB(id, updatedTask);
     toast.success('Task Updated');
     setUpdateTaskId(null);
     setnewTaskName('');
     setNewDescription('');
-  };
-
-  const handleFileChange = (e) => {
-    setExcelFile(e.target.files[0]);
   };
 
   return (
@@ -79,19 +70,6 @@ function Task() {
 
         <div className='max-w-6xl relative mx-auto px-5'>
           <div className='absolute -mt-[60px] right-5 flex items-center gap-2'>
-            <input
-              type='file'
-              ref={fileRef}
-              className='hidden'
-              onChange={handleFileChange}
-              accept='.csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel'
-            />
-            {/* <button
-              onClick={() => fileRef.current.click()}
-              className='bg-green-500 text-white px-3 py-2 rounded-md right-5 hover:bg-green-600 transition-all ease-in-out duration-300'
-            >
-              Upload From Excel
-            </button> */}
             <button
               onClick={() => setAddNewTask(true)}
               className='bg-blue-500 text-white px-3 py-2 rounded-md right-5 hover:bg-blue-600 transition-all ease-in-out duration-300'

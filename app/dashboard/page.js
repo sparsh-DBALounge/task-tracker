@@ -7,26 +7,29 @@ import {
   selectProjectSummary,
 } from '@/redux/selectors';
 import SummaryGraph from '@/components/charts/TaskSummaryGraph';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchEmployees } from '@/redux/slice/employee.slice';
-import { fetchProjectsAsync } from '@/redux/slice/project.slice';
-import { fetchTasksAsync } from '@/redux/slice/task.slice';
+import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { withAuth } from '@/HOC/withAuth';
-import { fetchRolesAsync } from '@/redux/slice/role.slice';
+import { useProjectHooks } from '@/hooks/useProjectHooks';
+import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
+import { useTaskHooks } from '@/hooks/useTaskHooks';
+import { useRoleHooks } from '@/hooks/useRoleHooks';
 
 function Dashboard() {
-  const dispatch = useDispatch();
+  const { fetchProjects } = useProjectHooks();
+  const { fetchEmployees } = useEmployeeHooks();
+  const { fetchTasks } = useTaskHooks();
+  const { fetchRoles } = useRoleHooks();
   const taskSummary = useSelector(selectTaskSummary);
   const employeeSummary = useSelector(selectEmployeeSummary);
   const projectSummary = useSelector(selectProjectSummary);
 
   useEffect(() => {
-    dispatch(fetchEmployees());
-    dispatch(fetchProjectsAsync());
-    dispatch(fetchTasksAsync());
-    dispatch(fetchRolesAsync());
-  }, [dispatch]);
+    fetchEmployees();
+    fetchProjects();
+    fetchTasks();
+    fetchRoles();
+  }, []);
 
   return (
     <>

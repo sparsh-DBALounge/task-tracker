@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { Modal } from 'antd';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { mapEmployeeNameToId } from '@/utils/mapEmployeeNameToId';
-import { addAttendanceAsync } from '@/redux/slice/attendance.slice';
+import { useAttendanceHooks } from '@/hooks/useAttendanceHooks';
 
 const AddNewAttendance = ({ addAttendance, setAddAttendance }) => {
-  const dispatch = useDispatch();
+  const { addAttendanceDB } = useAttendanceHooks();
   const { employees } = useSelector((state) => state.employeeSlice);
   const [isModalOpen, setIsModalOpen] = useState(addAttendance);
   const [employeeName, setEmployeeName] = useState(employees[0].employee_name);
@@ -34,7 +34,7 @@ const AddNewAttendance = ({ addAttendance, setAddAttendance }) => {
       ...formData,
       employee_id: mapEmployeeNameToId(employees, employeeName),
     };
-    dispatch(addAttendanceAsync(dbData));
+    addAttendanceDB(dbData);
     setAddAttendance(false);
   };
 

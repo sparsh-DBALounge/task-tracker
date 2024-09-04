@@ -1,19 +1,17 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  deleteEmployeeAsync,
-  updateEmployeeAsync,
-} from '@/redux/slice/employee.slice';
 import EmployeeDetails from './modals/EmployeeDetails';
 import toast from 'react-hot-toast';
-import { fetchEmployees } from '@/redux/slice/employee.slice';
 import { withAuth } from '@/HOC/withAuth';
 import ConfirmDelete from './modals/ConfirmDelete';
+import { useEmployeeHooks } from '@/hooks/useEmployeeHooks';
 
 const EmmployeeTable = () => {
-  const [editEmployee, setEditEmployee] = useState(null);
   const dispatch = useDispatch();
   const { employees } = useSelector((state) => state.employeeSlice);
+  const { fetchEmployees, updateEmployeeDB, deleteEmployeeDB } =
+    useEmployeeHooks();
+  const [editEmployee, setEditEmployee] = useState(null);
   const [editEmployeeDetails, setEditEmployeeDetails] = useState({
     employee_name: '',
     phone: '',
@@ -31,12 +29,12 @@ const EmmployeeTable = () => {
   });
 
   useEffect(() => {
-    dispatch(fetchEmployees());
-  }, [dispatch]);
+    fetchEmployees();
+  }, []);
 
   useEffect(() => {
     if (confirmDelete && selectedEmployee) {
-      dispatch(deleteEmployeeAsync(selectedEmployee.id));
+      deleteEmployeeDB(selectedEmployee.id);
       toast('Employee Deleted', {
         style: {
           fontWeight: 'bold',
@@ -55,12 +53,7 @@ const EmmployeeTable = () => {
   };
 
   const handleEmployeeUpdate = (employee) => {
-    dispatch(
-      updateEmployeeAsync({
-        id: employee.id,
-        updatedData: editEmployeeDetails,
-      })
-    );
+    updateEmployeeDB(employee.id, editEmployeeDetails);
     setEditEmployee(null);
     setEditEmployeeDetails({
       employee_name: '',
